@@ -35,12 +35,12 @@ export const HomePage: React.FC<HomePageProps> = ({
         <BrandIntro setCurrentPage={setCurrentPage} />
       </AnimatedSection>
 
-      <AnimatedSection delay={0.05}>
+      {/* <AnimatedSection delay={0.05}>
         <FeaturedProductsSection
           setCurrentPage={setCurrentPage}
           openQuickView={openQuickView}
         />
-      </AnimatedSection>
+      </AnimatedSection> */}
 
       <AnimatedSection delay={0.05}>
         <ServicesGridSection

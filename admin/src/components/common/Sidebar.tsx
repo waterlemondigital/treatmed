@@ -35,10 +35,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const menuItems: { id: AdminTab; label: string; icon: any; countBadge?: string }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'products', label: 'Products Catalog', icon: Package },
+    // { id: 'products', label: 'Products Catalog', icon: Package },
     { id: 'services', label: 'Clinic Services', icon: Stethoscope },
     { id: 'treatments', label: 'Treatment Care', icon: HeartPulse },
-    { id: 'orders', label: 'Orders & Fulfillment', icon: ShoppingBag },
+    // { id: 'orders', label: 'Orders & Fulfillment', icon: ShoppingBag },
     { id: 'appointments', label: 'Patient Bookings', icon: Calendar },
     { id: 'reviews', label: 'Customer Reviews', icon: Star },
     { id: 'inquiries', label: 'Contact Messages', icon: Mail },

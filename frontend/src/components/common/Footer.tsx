@@ -87,11 +87,11 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentPage, openBookingModal
                   Home Overview
                 </button>
               </li>
-              <li>
+              {/* <li>
                 <button onClick={() => setCurrentPage({ type: 'shop' })} className="hover:text-[#B9964A] transition-colors">
                   Natural Products & Medicines
                 </button>
-              </li>
+              </li> */}
               <li>
                 <button onClick={() => setCurrentPage({ type: 'services' })} className="hover:text-[#B9964A] transition-colors">
                   In-Clinic Services

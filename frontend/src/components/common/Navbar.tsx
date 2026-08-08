@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { label: 'Home', page: { type: 'home' } as PageView },
-    { label: 'Shop Products', page: { type: 'shop' } as PageView },
+    // { label: 'Shop Products', page: { type: 'shop' } as PageView },
     { label: 'Services', page: { type: 'services' } as PageView },
     { label: 'Special Treatments', page: { type: 'treatments' } as PageView },
     { label: 'About Us', page: { type: 'about' } as PageView },
@@ -207,8 +207,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </div>
 
-            {/* Cart Icon & Badge */}
-            <button
+            {/* Cart Icon & Badge - Temporarily hidden per user request */}
+            {/* <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2 rounded-xl bg-[#B9964A] text-white hover:bg-[#8C6D2F] shadow-sm transition-all shrink-0"
               title="Shopping Cart"
@@ -219,7 +219,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {totalItems}
                 </span>
               )}
-            </button>
+            </button> */}
 
             {/* Mobile Menu Toggle Button */}
             <button

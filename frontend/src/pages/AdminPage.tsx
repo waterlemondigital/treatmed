@@ -59,7 +59,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Active Admin Tab
-  const [activeTab, setActiveTab] = useState<'products' | 'services' | 'treatments' | 'orders' | 'appointments' | 'inquiries'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'services' | 'treatments' | 'orders' | 'appointments' | 'inquiries'>('services');
 
   // Data States
   const [products, setProducts] = useState<Product[]>([]);
@@ -389,7 +389,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
 
         {/* Tab Navigation */}
         <div className="flex border-b border-[#E8DCC4] gap-2 sm:gap-6 overflow-x-auto scrollbar-none pb-1">
-          <button
+          {/* <button
             onClick={() => setActiveTab('products')}
             className={`pb-3 text-xs font-bold transition-all flex items-center gap-2 border-b-2 shrink-0 ${
               activeTab === 'products' ? 'border-[#B9964A] text-[#B9964A]' : 'border-transparent text-[#7A8F6C] hover:text-[#1E1B16]'
@@ -397,7 +397,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
           >
             <Package className="w-4 h-4" />
             <span>Products ({products.length})</span>
-          </button>
+          </button> */}
 
           <button
             onClick={() => setActiveTab('services')}
@@ -419,7 +419,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
             <span>Treatments ({treatments.length})</span>
           </button>
 
-          <button
+          {/* <button
             onClick={() => setActiveTab('orders')}
             className={`pb-3 text-xs font-bold transition-all flex items-center gap-2 border-b-2 shrink-0 ${
               activeTab === 'orders' ? 'border-[#B9964A] text-[#B9964A]' : 'border-transparent text-[#7A8F6C] hover:text-[#1E1B16]'
@@ -427,7 +427,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
           >
             <ShoppingBag className="w-4 h-4" />
             <span>Orders ({orders.length})</span>
-          </button>
+          </button> */}
 
           <button
             onClick={() => setActiveTab('appointments')}

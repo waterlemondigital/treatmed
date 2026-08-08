@@ -82,7 +82,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-10">
-              <Button
+              {/* <Button
                 variant="primary"
                 size="lg"
                 onClick={() => setCurrentPage({ type: 'shop' })}
@@ -90,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               >
                 <ShoppingBag className="w-5 h-5 text-white" />
                 <span>Explore Botanical Shop</span>
-              </Button>
+              </Button> */}
 
               <Button
                 variant="forest"
