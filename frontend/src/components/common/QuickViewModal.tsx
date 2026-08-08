@@ -138,7 +138,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             <button
               onClick={() => {
                 onClose();
-                setCurrentPage({ type: 'product-detail', productId: product.id });
+                setCurrentPage({ type: 'product-detail', productId: (product as any)._id || product.id });
               }}
               className="w-full text-center text-xs font-semibold text-[#8C6D2F] hover:text-[#1E1B16] flex items-center justify-center gap-1 transition-colors"
             >

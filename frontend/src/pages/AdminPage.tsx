@@ -218,6 +218,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
         }
       }
       setIsModalOpen(false);
+      loadAdminData();
     } catch (err: any) {
       addToast('error', 'Action Failed', err.message || 'Error saving item.');
     } finally {

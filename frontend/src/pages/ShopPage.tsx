@@ -65,7 +65,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0; // featured
     });
-  }, [selectedCategory, searchQuery, maxPrice, sortBy]);
+  }, [productsList, selectedCategory, searchQuery, maxPrice, sortBy]);
 
   const resetFilters = () => {
     setSelectedCategory('All');

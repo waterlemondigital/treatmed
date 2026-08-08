@@ -85,6 +85,11 @@ router.put('/:id', protect, admin, upload.single('image'), async (req, res, next
     }
 
     const updateData = { ...req.body };
+    delete updateData._id;
+    delete updateData.id;
+    delete updateData.createdAt;
+    delete updateData.updatedAt;
+    delete updateData.__v;
 
     if (typeof updateData.whatToExpect === 'string') {
       updateData.whatToExpect = JSON.parse(updateData.whatToExpect);

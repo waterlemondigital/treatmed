@@ -87,6 +87,7 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
         addToast('success', 'Product Created', `${formData.name} added to live database.`);
       }
       setIsModalOpen(false);
+      if (onRefresh) onRefresh();
     } catch (err: any) {
       addToast('error', 'Save Failed', err.message || 'Error saving product');
     } finally {
@@ -100,6 +101,7 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
       await deleteProductAdmin(id);
       setProducts((prev) => prev.filter((p) => (p as any)._id !== id && p.id !== id));
       addToast('info', 'Product Removed', `Deleted "${name}"`);
+      if (onRefresh) onRefresh();
     } catch (err: any) {
       addToast('error', 'Delete Failed', err.message);
     }
