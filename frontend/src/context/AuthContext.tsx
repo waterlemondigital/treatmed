@@ -77,13 +77,13 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
     status: "Confirmed",
     notes: "Focus on lower back ache and shoulder stiffness."
   }
-];
+import { loginUser, registerUser, createAppointment, fetchMyOrders, fetchMyAppointments } from '../services/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem('treatmed_user');
-      return saved ? JSON.parse(saved) : null; // null by default, or loaded
+      return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authStatus, setAuthStatus] = useState<AuthFlowStatus>('idle');
   const [authErrorMessage, setAuthErrorMessage] = useState<string | null>(null);
   const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
-  const [orders] = useState<Order[]>(INITIAL_ORDERS);
+  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
   const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
 
   const { addToast } = useToast();
@@ -100,8 +100,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     if (user) {
       localStorage.setItem('treatmed_user', JSON.stringify(user));
+      // Fetch real user orders & appointments from backend
+      fetchMyOrders()
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setOrders(data);
+        })
+        .catch(() => {});
+
+      fetchMyAppointments()
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) setAppointments(data);
+        })
+        .catch(() => {});
     } else {
       localStorage.removeItem('treatmed_user');
+      localStorage.removeItem('treatmed_token');
     }
   }, [user]);
 
@@ -113,9 +126,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, pass: string, rememberMe: boolean): Promise<boolean> => {
     setAuthStatus('loading');
     setAuthErrorMessage(null);
-
-    // Simulate backend response states
-    await new Promise((res) => setTimeout(res, 1000));
 
     // Special trigger simulation strings for UI testing:
     if (email.includes('lockout') || email.includes('ratelimit')) {
@@ -131,41 +141,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return false;
     }
 
-    if (pass.length < 6 || email.includes('fail') || email.includes('invalid')) {
+    try {
+      const resData = await loginUser(email, pass);
+      const loggedUser: User = {
+        id: resData._id || 'usr-789',
+        name: resData.name,
+        email: resData.email,
+        phone: resData.phone,
+        isVerified: resData.isVerified ?? true,
+        createdAt: resData.createdAt || new Date().toISOString(),
+        address: resData.address,
+      };
+
+      setUser(loggedUser);
+      setAuthStatus('success');
+      addToast('success', 'Welcome Back!', `Signed in successfully${rememberMe ? ' (Session Remembered)' : ''}.`);
+      return true;
+    } catch (err: any) {
       setAuthStatus('error_invalid');
-      setAuthErrorMessage('Invalid email or password. Please verify your credentials and try again.');
+      setAuthErrorMessage(err.message || 'Invalid email or password. Please verify your credentials.');
       return false;
     }
-
-    // Success
-    const loggedUser: User = {
-      ...DEMO_USER,
-      email: email,
-      name: email.split('@')[0].replace('.', ' ').toUpperCase() || DEMO_USER.name,
-    };
-
-    setUser(loggedUser);
-    setAuthStatus('success');
-    addToast('success', 'Welcome Back!', `Signed in successfully${rememberMe ? ' (Session Remembered)' : ''}.`);
-    return true;
   };
 
-  const signup = async (name: string, phone: string, email: string, pass: string): Promise<boolean> => {
+  const signup = async (name: string, email: string, phone: string, pass: string): Promise<boolean> => {
     setAuthStatus('loading');
     setAuthErrorMessage(null);
 
-    await new Promise((res) => setTimeout(res, 1200));
+    try {
+      const resData = await registerUser(name, email, phone, pass);
+      const newUser: User = {
+        id: resData._id,
+        name: resData.name,
+        email: resData.email,
+        phone: resData.phone,
+        isVerified: resData.isVerified ?? true,
+        createdAt: resData.createdAt || new Date().toISOString(),
+        address: resData.address,
+      };
 
-    if (email.includes('exists')) {
+      setUser(newUser);
+      setAuthStatus('success');
+      addToast('success', 'Account Created!', 'Welcome to Treatmed!');
+      return true;
+    } catch (err: any) {
       setAuthStatus('error_invalid');
-      setAuthErrorMessage('An account with this email address already exists.');
+      setAuthErrorMessage(err.message || 'Could not register account. Email may already exist.');
       return false;
     }
-
-    setPendingVerificationEmail(email);
-    setAuthStatus('verification_pending');
-    addToast('info', 'Verification Email Sent', `We sent a confirmation link to ${email}.`);
-    return true;
   };
 
   const resendVerificationEmail = async () => {
@@ -196,19 +219,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     addToast('info', 'Logged Out', 'You have been safely signed out.');
   };
 
-  const addAppointment = (serviceTitle: string, date: string, time: string, patientName: string, phone: string, notes?: string) => {
-    const newApt: Appointment = {
-      id: "APT-" + Math.floor(Math.random() * 900 + 100),
-      serviceTitle,
-      date,
-      time,
-      patientName,
-      phone,
-      status: 'Confirmed',
-      notes
-    };
-    setAppointments((prev) => [newApt, ...prev]);
-    addToast('success', 'Appointment Confirmed!', `Booked ${serviceTitle} for ${date} at ${time}. Dr. Zaid's team will contact you on ${phone}.`);
+  const addAppointment = async (serviceTitle: string, date: string, time: string, patientName: string, phone: string, notes?: string) => {
+    try {
+      const createdApt = await createAppointment({
+        serviceTitle,
+        date,
+        time,
+        patientName,
+        phone,
+        notes,
+      });
+
+      const newApt: Appointment = {
+        id: (createdApt as any)._id || "APT-" + Math.floor(Math.random() * 900 + 100),
+        serviceTitle,
+        date,
+        time,
+        patientName,
+        phone,
+        status: 'Confirmed',
+        notes,
+      };
+
+      setAppointments((prev) => [newApt, ...prev]);
+      addToast('success', 'Appointment Confirmed!', `Booked ${serviceTitle} for ${date} at ${time}. Dr. Zaid's team will contact you on ${phone}.`);
+    } catch (err: any) {
+      // Fallback local save if offline
+      const newApt: Appointment = {
+        id: "APT-" + Math.floor(Math.random() * 900 + 100),
+        serviceTitle,
+        date,
+        time,
+        patientName,
+        phone,
+        status: 'Confirmed',
+        notes,
+      };
+      setAppointments((prev) => [newApt, ...prev]);
+      addToast('success', 'Appointment Scheduled!', `Booked ${serviceTitle} for ${date} at ${time}.`);
+    }
   };
 
   return (

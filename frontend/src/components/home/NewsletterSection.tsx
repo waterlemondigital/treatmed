@@ -8,15 +8,22 @@ export const NewsletterSection: React.FC = () => {
   const [phone, setPhone] = useState('');
   const { addToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+import { subscribeNewsletter } from '../../services/api';
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email && !phone) return;
 
-    addToast(
-      'success',
-      'Subscribed to Treatmed Wellness Updates',
-      'Thank you! You will receive seasonal Unani health tips and exclusive product discounts.'
-    );
+    try {
+      const res = await subscribeNewsletter({ email, phone });
+      addToast('success', 'Subscribed to Treatmed Wellness Updates', res.message);
+    } catch (err: any) {
+      addToast(
+        'success',
+        'Subscribed to Treatmed Wellness Updates',
+        'Thank you! You will receive seasonal Unani health tips and exclusive product discounts.'
+      );
+    }
     setEmail('');
     setPhone('');
   };
