@@ -26,13 +26,16 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [benefitsInput, setBenefitsInput] = useState('Combats hair fall, Strengthens hair roots');
+  const [ingredientsInput, setIngredientsInput] = useState('Amla, Bhringraj, Brahmi');
+
   const [formData, setFormData] = useState<any>({
     name: '',
     category: 'Hair Care',
     price: 350,
     originalPrice: 420,
     rating: 4.8,
-    reviewsCount: 1,
+    reviewsCount: 12,
     image: 'https://images.unsplash.com/photo-1608248597266-2244248232f7?auto=format&fit=crop&q=80&w=600',
     shortDesc: '',
     description: '',
@@ -46,13 +49,15 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
 
   const openCreateModal = () => {
     setEditingProduct(null);
+    setBenefitsInput('Combats hair fall, Strengthens roots');
+    setIngredientsInput('Amla, Bhringraj, Brahmi');
     setFormData({
       name: '',
       category: 'Hair Care',
       price: 350,
       originalPrice: 420,
       rating: 4.8,
-      reviewsCount: 1,
+      reviewsCount: 12,
       image: 'https://images.unsplash.com/photo-1608248597266-2244248232f7?auto=format&fit=crop&q=80&w=600',
       shortDesc: '',
       description: '',
@@ -68,6 +73,8 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
 
   const openEditModal = (prod: Product) => {
     setEditingProduct(prod);
+    setBenefitsInput(Array.isArray(prod.benefits) ? prod.benefits.join(', ') : (prod.benefits || ''));
+    setIngredientsInput(Array.isArray(prod.ingredients) ? prod.ingredients.join(', ') : (prod.ingredients || ''));
     setFormData({ ...prod });
     setIsModalOpen(true);
   };
@@ -75,14 +82,23 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+
+    const benefitsArray = benefitsInput.split(/,|\n/).map((s) => s.trim()).filter(Boolean);
+    const ingredientsArray = ingredientsInput.split(/,|\n/).map((s) => s.trim()).filter(Boolean);
+    const payload = {
+      ...formData,
+      benefits: benefitsArray,
+      ingredients: ingredientsArray,
+    };
+
     try {
       if (editingProduct) {
         const id = editingProduct._id || editingProduct.id;
-        const updated = await updateProductAdmin(id, formData);
+        const updated = await updateProductAdmin(id, payload);
         setProducts((prev) => prev.map((p) => ((p as any)._id === id || p.id === id ? updated : p)));
         addToast('success', 'Product Updated', `${formData.name} updated successfully.`);
       } else {
-        const created = await createProductAdmin(formData);
+        const created = await createProductAdmin(payload);
         setProducts((prev) => [created, ...prev]);
         addToast('success', 'Product Created', `${formData.name} added to live database.`);
       }
@@ -325,6 +341,54 @@ export const ProductsManager: React.FC<ProductsManagerProps> = ({
                   required
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full bg-white border border-[#E8DCC4] rounded-xl p-3 text-[#1E1B16]"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-semibold text-[#1E1B16] mb-1">Product Rating (1.0 - 5.0)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="1.0"
+                    max="5.0"
+                    value={formData.rating ?? 4.8}
+                    onChange={(e) => setFormData({ ...formData, rating: Number(e.target.value) })}
+                    className="w-full bg-white border border-[#E8DCC4] rounded-xl px-3.5 py-2 text-[#1E1B16]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-[#1E1B16] mb-1">Reviews Count</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.reviewsCount ?? 12}
+                    onChange={(e) => setFormData({ ...formData, reviewsCount: Number(e.target.value) })}
+                    className="w-full bg-white border border-[#E8DCC4] rounded-xl px-3.5 py-2 text-[#1E1B16]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#1E1B16] mb-1">Key Benefits (Comma separated)</label>
+                <textarea
+                  rows={2}
+                  value={benefitsInput}
+                  onChange={(e) => setBenefitsInput(e.target.value)}
+                  placeholder="e.g. Combats hair fall, Strengthens hair roots, Prevents premature graying"
+                  className="w-full bg-white border border-[#E8DCC4] rounded-xl p-3 text-[#1E1B16]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-[#1E1B16] mb-1">Key Herbal Ingredients (Comma separated)</label>
+                <textarea
+                  rows={2}
+                  value={ingredientsInput}
+                  onChange={(e) => setIngredientsInput(e.target.value)}
+                  placeholder="e.g. Amla, Bhringraj, Brahmi, Cold-Pressed Sesame Oil"
                   className="w-full bg-white border border-[#E8DCC4] rounded-xl p-3 text-[#1E1B16]"
                 />
               </div>
