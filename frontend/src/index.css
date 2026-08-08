@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --color-gold: #B9964A;
+  --color-gold-dark: #8C6D2F;
+  --color-gold-light: #E2D1A9;
+  --color-gold-cream: #FAF4E8;
+  
+  --color-cream: #FBF8F2;
+  --color-ivory: #F3EBDA;
+  --color-ivory-dark: #E8DCC4;
+  
+  --color-forest: #2F4A3D;
+  --color-forest-dark: #1F3229;
+  --color-forest-light: #416353;
+  
+  --color-sage: #7A8F6C;
+  --color-sage-light: #EDF2EA;
+  
+  --color-terracotta: #B5652D;
+  --color-charcoal: #1E1B16;
+  --color-gray-body: #4A453D;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    color: var(--color-charcoal);
+    background-color: var(--color-cream);
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif);
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes spinSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.8s infinite linear;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s infinite linear;
+}
+
+/* Botanical texture pattern generator */
+.bg-botanical-pattern {
+  background-color: #FBF8F2;
+  background-image: radial-gradient(#B9964A 0.75px, transparent 0.75px), radial-gradient(#2F4A3D 0.75px, #FBF8F2 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-opacity: 0.05;
+}
+
+.bg-dark-botanical {
+  background-color: #1E1B16;
+  background-image: radial-gradient(#B9964A 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F3EBDA;
+}
+::-webkit-scrollbar-thumb {
+  background: #B9964A;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8C6D2F;
+}

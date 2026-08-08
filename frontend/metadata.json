@@ -1,0 +1,6 @@
+{
+  "name": "Treatmed",
+  "description": "Treatmed - Unani & Ayurvedic Store and In-Clinic Wellness Services. Pure herbal products, Hijama therapy, physiotherapy, and doctor consultations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
