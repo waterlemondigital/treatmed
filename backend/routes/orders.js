@@ -2,7 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const validate = require('../middleware/validate');
 const Order = require('../models/Order');
-const { protect } = require('../middleware/auth');
+const { protect, admin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -87,6 +87,37 @@ router.get('/:id', protect, async (req, res, next) => {
     }
 
     res.json(order);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/orders
+// @desc    Get all orders (Admin)
+// @access  Admin
+router.get('/', protect, admin, async (req, res, next) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   PUT /api/orders/:id/status
+// @desc    Update order status (Admin)
+// @access  Admin
+router.put('/:id/status', protect, admin, async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    order.status = status || order.status;
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
   } catch (error) {
     next(error);
   }

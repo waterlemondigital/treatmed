@@ -15,7 +15,8 @@ import {
   Sparkles,
   Calendar,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -170,6 +171,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                       >
                         <UserIcon className="w-3.5 h-3.5 text-[#B9964A]" />
                         <span>My Profile & Orders</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCurrentPage({ type: 'admin' });
+                          setIsUserMenuOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs text-[#2F4A3D] hover:bg-[#FAF4E8] font-bold flex items-center gap-2"
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#B9964A]" />
+                        <span>Admin Console</span>
                       </button>
                       <button
                         onClick={() => {

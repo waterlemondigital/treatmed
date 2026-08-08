@@ -38,4 +38,18 @@ router.post(
   }
 );
 
+const { protect, admin } = require('../middleware/auth');
+
+// @route   GET /api/contact
+// @desc    Get all contact inquiries (Admin)
+// @access  Admin
+router.get('/', protect, admin, async (req, res, next) => {
+  try {
+    const inquiries = await ContactInquiry.find().sort({ createdAt: -1 });
+    res.json(inquiries);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

@@ -25,6 +25,7 @@ import { CartPage } from './pages/CartPage';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { AccountPage } from './pages/AccountPage';
+import { AdminPage } from './pages/AdminPage';
 
 import { MessageSquare } from 'lucide-react';
 import { STORE_INFO } from './data/mockData';
@@ -167,6 +168,8 @@ export function AppContent() {
             {currentPage.type === 'signup' && <SignupPage setCurrentPage={handleNavigate} />}
 
             {currentPage.type === 'account' && <AccountPage setCurrentPage={handleNavigate} />}
+
+            {currentPage.type === 'admin' && <AdminPage setCurrentPage={handleNavigate} />}
           </motion.div>
         </AnimatePresence>
       </main>

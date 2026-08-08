@@ -40,4 +40,18 @@ router.post(
   }
 );
 
+const { protect, admin } = require('../middleware/auth');
+
+// @route   GET /api/newsletter
+// @desc    Get all newsletter subscribers (Admin)
+// @access  Admin
+router.get('/', protect, admin, async (req, res, next) => {
+  try {
+    const subscribers = await NewsletterSubscriber.find().sort({ createdAt: -1 });
+    res.json(subscribers);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

@@ -113,4 +113,5 @@ export type PageView =
   | { type: 'cart' }
   | { type: 'login' }
   | { type: 'signup' }
-  | { type: 'account' };
+  | { type: 'account' }
+  | { type: 'admin' };

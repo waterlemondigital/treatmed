@@ -174,3 +174,94 @@ export const validateCoupon = (code: string, subtotal?: number) => {
     body: JSON.stringify({ code, subtotal }),
   });
 };
+
+// ─── Admin Management APIs ──────────────────────────────────────
+export const createProductAdmin = (productData: Partial<Product>) => {
+  return request<Product>('/products', {
+    method: 'POST',
+    body: JSON.stringify(productData),
+  });
+};
+
+export const updateProductAdmin = (id: string, productData: Partial<Product>) => {
+  return request<Product>(`/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(productData),
+  });
+};
+
+export const deleteProductAdmin = (id: string) => {
+  return request<{ message: string }>(`/products/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const createServiceAdmin = (serviceData: Partial<Service>) => {
+  return request<Service>('/services', {
+    method: 'POST',
+    body: JSON.stringify(serviceData),
+  });
+};
+
+export const updateServiceAdmin = (id: string, serviceData: Partial<Service>) => {
+  return request<Service>(`/services/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(serviceData),
+  });
+};
+
+export const deleteServiceAdmin = (id: string) => {
+  return request<{ message: string }>(`/services/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const createTreatmentAdmin = (treatmentData: Partial<Treatment>) => {
+  return request<Treatment>('/treatments', {
+    method: 'POST',
+    body: JSON.stringify(treatmentData),
+  });
+};
+
+export const updateTreatmentAdmin = (id: string, treatmentData: Partial<Treatment>) => {
+  return request<Treatment>(`/treatments/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(treatmentData),
+  });
+};
+
+export const deleteTreatmentAdmin = (id: string) => {
+  return request<{ message: string }>(`/treatments/${id}`, {
+    method: 'DELETE',
+  });
+};
+
+export const fetchAllOrdersAdmin = () => {
+  return request<Order[]>('/orders');
+};
+
+export const updateOrderStatusAdmin = (id: string, status: string) => {
+  return request<Order>(`/orders/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
+};
+
+export const fetchAllAppointmentsAdmin = () => {
+  return request<Appointment[]>('/appointments');
+};
+
+export const updateAppointmentStatusAdmin = (id: string, status: string) => {
+  return request<Appointment>(`/appointments/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
+};
+
+export const fetchContactInquiriesAdmin = () => {
+  return request<any[]>('/contact');
+};
+
+export const fetchNewsletterSubscribersAdmin = () => {
+  return request<any[]>('/newsletter');
+};

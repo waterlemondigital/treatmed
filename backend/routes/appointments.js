@@ -2,7 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const validate = require('../middleware/validate');
 const Appointment = require('../models/Appointment');
-const { protect, optionalAuth } = require('../middleware/auth');
+const { protect, optionalAuth, admin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -48,6 +48,37 @@ router.get('/my', protect, async (req, res, next) => {
   try {
     const appointments = await Appointment.find({ userId: req.user._id }).sort({ createdAt: -1 });
     res.json(appointments);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/appointments
+// @desc    Get all appointments (Admin)
+// @access  Admin
+router.get('/', protect, admin, async (req, res, next) => {
+  try {
+    const appointments = await Appointment.find().sort({ createdAt: -1 });
+    res.json(appointments);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   PUT /api/appointments/:id/status
+// @desc    Update appointment status (Admin)
+// @access  Admin
+router.put('/:id/status', protect, admin, async (req, res, next) => {
+  try {
+    const { status } = req.body;
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found.' });
+    }
+
+    appointment.status = status || appointment.status;
+    const updatedAppointment = await appointment.save();
+    res.json(updatedAppointment);
   } catch (error) {
     next(error);
   }
