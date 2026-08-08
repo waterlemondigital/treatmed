@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_PRODUCTS } from '../../data/mockData';
 import { Product, PageView } from '../../types';
+import { fetchProducts } from '../../services/api';
 import { useCart } from '../../context/CartContext';
 import { Button } from '../common/Button';
 import { BotanicalDivider } from '../common/BotanicalDivider';
@@ -17,11 +18,20 @@ export const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = (
   openQuickView,
 }) => {
   const { addToCart } = useCart();
+  const [productsList, setProductsList] = useState<Product[]>(MOCK_PRODUCTS);
   const [activeTab, setActiveTab] = useState<string>('All');
+
+  useEffect(() => {
+    fetchProducts()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setProductsList(data);
+      })
+      .catch(() => {});
+  }, []);
 
   const categories = ['All', 'Hair Care', 'Pain Relief', 'Tablets'];
 
-  const filteredProducts = MOCK_PRODUCTS.filter((p) => {
+  const filteredProducts = productsList.filter((p) => {
     if (activeTab === 'All') return true;
     if (activeTab === 'Hair Care') return p.category === 'Hair Care';
     if (activeTab === 'Pain Relief') return p.category === 'Pain Relief';

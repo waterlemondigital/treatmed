@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_SERVICES } from '../data/mockData';
-import { PageView } from '../types';
+import { Service, PageView } from '../types';
+import { fetchServices } from '../services/api';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
 import { 
@@ -25,6 +26,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   setCurrentPage,
   openBookingModal,
 }) => {
+  const [services, setServices] = useState<Service[]>(MOCK_SERVICES);
+
+  useEffect(() => {
+    fetchServices()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setServices(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Stethoscope': return <Stethoscope className="w-6 h-6 text-[#B9964A]" />;
@@ -56,9 +68,11 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
 
         {/* Detailed Services Listing */}
         <div className="space-y-8">
-          {MOCK_SERVICES.map((service, index) => (
-            <div
-              key={service.id}
+          {services.map((service, index) => {
+            const id = (service as any)._id || service.id;
+            return (
+              <div
+                key={id}
               className="bg-white rounded-3xl border border-[#E8DCC4] p-6 sm:p-8 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
             >
               {/* Image Column */}
@@ -126,7 +140,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                   <Button
                     variant="outline"
                     size="md"
-                    onClick={() => setCurrentPage({ type: 'service-detail', serviceId: service.id })}
+                    onClick={() => setCurrentPage({ type: 'service-detail', serviceId: id })}
                     className="gap-2"
                   >
                     <span>View Deep Dive & FAQs</span>
@@ -135,7 +149,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </div>
     </div>

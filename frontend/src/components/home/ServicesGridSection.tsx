@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_SERVICES } from '../../data/mockData';
 import { Service, PageView } from '../../types';
+import { fetchServices } from '../../services/api';
 import { Button } from '../common/Button';
 import { BotanicalDivider } from '../common/BotanicalDivider';
 import { 
@@ -28,6 +29,15 @@ export const ServicesGridSection: React.FC<ServicesGridSectionProps> = ({
   setCurrentPage,
   openBookingModal,
 }) => {
+  const [servicesList, setServicesList] = useState<Service[]>(MOCK_SERVICES);
+
+  useEffect(() => {
+    fetchServices()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setServicesList(data);
+      })
+      .catch(() => {});
+  }, []);
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Stethoscope': return <Stethoscope className="w-6 h-6 text-[#C89B3C]" />;
@@ -63,9 +73,11 @@ export const ServicesGridSection: React.FC<ServicesGridSectionProps> = ({
 
         {/* 6 Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {MOCK_SERVICES.map((service, idx) => (
-            <motion.div
-              key={service.id}
+          {servicesList.map((service, idx) => {
+            const id = (service as any)._id || service.id;
+            return (
+              <motion.div
+                key={id}
               whileHover={{ y: -6 }}
               transition={{ duration: 0.3 }}
               className="bg-[#FFFDF7] rounded-3xl border-2 border-[#E3D4B5] p-6 shadow-sm hover:shadow-2xl hover:border-[#C89B3C] transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
@@ -117,7 +129,7 @@ export const ServicesGridSection: React.FC<ServicesGridSectionProps> = ({
                 </Button>
 
                 <button
-                  onClick={() => setCurrentPage({ type: 'service-detail', serviceId: service.id })}
+                  onClick={() => setCurrentPage({ type: 'service-detail', serviceId: id })}
                   className="p-3 rounded-xl border border-[#E3D4B5] text-[#1C382B] hover:bg-[#EADBB8] transition-colors shrink-0"
                   title="View Service Details"
                 >
@@ -125,7 +137,8 @@ export const ServicesGridSection: React.FC<ServicesGridSectionProps> = ({
                 </button>
               </div>
             </motion.div>
-          ))}
+          );
+        })}
         </div>
 
         {/* Bottom Banner */}

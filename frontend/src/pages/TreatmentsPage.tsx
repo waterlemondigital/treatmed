@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_TREATMENTS } from '../data/mockData';
-import { PageView } from '../types';
+import { Treatment, PageView } from '../types';
+import { fetchTreatments } from '../services/api';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
 import { ShieldAlert, Sparkles, Flame, Heart, Scissors, Check, Calendar, ArrowRight } from 'lucide-react';
@@ -14,6 +15,17 @@ export const TreatmentsPage: React.FC<TreatmentsPageProps> = ({
   setCurrentPage,
   openBookingModal,
 }) => {
+  const [treatments, setTreatments] = useState<Treatment[]>(MOCK_TREATMENTS);
+
+  useEffect(() => {
+    fetchTreatments()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTreatments(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
     <div className="py-12 bg-[#FBF8F2] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,11 +43,13 @@ export const TreatmentsPage: React.FC<TreatmentsPageProps> = ({
         </div>
 
         <div className="space-y-10">
-          {MOCK_TREATMENTS.map((treatment, idx) => (
-            <div
-              key={treatment.id}
-              className="bg-white rounded-3xl border border-[#E8DCC4] p-6 sm:p-10 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-            >
+          {treatments.map((treatment, idx) => {
+            const id = (treatment as any)._id || treatment.id;
+            return (
+              <div
+                key={id}
+                className="bg-white rounded-3xl border border-[#E8DCC4] p-6 sm:p-10 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+              >
               <div className={`lg:col-span-5 ${idx % 2 === 1 ? 'lg:order-last' : ''}`}>
                 <div className="relative rounded-2xl overflow-hidden h-72 border-2 border-[#E8DCC4]">
                   <img
@@ -96,7 +110,8 @@ export const TreatmentsPage: React.FC<TreatmentsPageProps> = ({
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
       </div>
     </div>

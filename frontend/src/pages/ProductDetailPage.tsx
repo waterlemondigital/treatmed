@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_PRODUCTS, STORE_INFO } from '../data/mockData';
 import { Product, PageView } from '../types';
+import { fetchProducts, fetchProductById } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
@@ -31,12 +32,28 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'benefits' | 'ingredients' | 'usage'>('benefits');
+  const [product, setProduct] = useState<Product>(() => {
+    return MOCK_PRODUCTS.find((p) => (p as any)._id === productId || p.id === productId) || MOCK_PRODUCTS[0];
+  });
+  const [allProducts, setAllProducts] = useState<Product[]>(MOCK_PRODUCTS);
 
-  const product = MOCK_PRODUCTS.find((p) => p.id === productId) || MOCK_PRODUCTS[0];
+  useEffect(() => {
+    fetchProductById(productId)
+      .then((data) => {
+        if (data) setProduct(data);
+      })
+      .catch(() => {});
 
-  const relatedProducts = MOCK_PRODUCTS.filter(
-    (p) => p.id !== product.id && p.category === product.category
-  ).concat(MOCK_PRODUCTS.filter((p) => p.id !== product.id)).slice(0, 3);
+    fetchProducts()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setAllProducts(data);
+      })
+      .catch(() => {});
+  }, [productId]);
+
+  const relatedProducts = allProducts.filter(
+    (p) => ((p as any)._id || p.id) !== ((product as any)._id || product.id) && p.category === product.category
+  ).concat(allProducts.filter((p) => ((p as any)._id || p.id) !== ((product as any)._id || product.id))).slice(0, 3);
 
   const handleWhatsAppOrder = () => {
     const text = `Hello Treatmed Store, I would like to order *${product.name}* (x${quantity}, Price: ₹${product.price * quantity}). Please guide me.`;

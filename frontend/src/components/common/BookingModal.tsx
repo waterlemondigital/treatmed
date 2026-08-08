@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_SERVICES, STORE_INFO } from '../../data/mockData';
+import { Service } from '../../types';
+import { fetchServices } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from './Button';
 import { X, Calendar, Clock, User, Phone, FileText, CheckCircle2, Sparkles, MapPin } from 'lucide-react';
@@ -16,10 +18,21 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   preselectedServiceTitle,
 }) => {
   const { user, addAppointment } = useAuth();
+  const [servicesList, setServicesList] = useState<Service[]>(MOCK_SERVICES);
 
   const [selectedService, setSelectedService] = useState(
-    preselectedServiceTitle || MOCK_SERVICES[2].title // Default Hijama
+    preselectedServiceTitle || MOCK_SERVICES[2].title
   );
+
+  useEffect(() => {
+    fetchServices()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setServicesList(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
   const [patientName, setPatientName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [date, setDate] = useState(() => {
@@ -111,11 +124,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 onChange={(e) => setSelectedService(e.target.value)}
                 className="w-full bg-white border border-[#E8DCC4] rounded-xl px-3.5 py-2.5 text-xs text-[#1E1B16] font-medium focus:outline-none focus:ring-2 focus:ring-[#B9964A]"
               >
-                {MOCK_SERVICES.map((srv) => (
-                  <option key={srv.id} value={srv.title}>
-                    {srv.title} ({srv.duration})
-                  </option>
-                ))}
+                {servicesList.map((srv) => {
+                  const id = (srv as any)._id || srv.id;
+                  return (
+                    <option key={id} value={srv.title}>
+                      {srv.title} ({srv.duration})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

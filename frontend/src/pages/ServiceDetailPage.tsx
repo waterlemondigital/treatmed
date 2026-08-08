@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_SERVICES, STORE_INFO } from '../data/mockData';
-import { PageView } from '../types';
+import { Service, PageView } from '../types';
+import { fetchServiceById, fetchServices } from '../services/api';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
 import { 
@@ -25,7 +26,17 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   setCurrentPage,
   openBookingModal,
 }) => {
-  const service = MOCK_SERVICES.find((s) => s.id === serviceId) || MOCK_SERVICES[2];
+  const [service, setService] = useState<Service>(() => {
+    return MOCK_SERVICES.find((s) => (s as any)._id === serviceId || s.id === serviceId) || MOCK_SERVICES[2];
+  });
+
+  useEffect(() => {
+    fetchServiceById(serviceId)
+      .then((data) => {
+        if (data) setService(data);
+      })
+      .catch(() => {});
+  }, [serviceId]);
 
   const faqs = [
     {

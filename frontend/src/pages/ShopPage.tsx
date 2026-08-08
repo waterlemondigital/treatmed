@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { MOCK_PRODUCTS } from '../data/mockData';
 import { Product, PageView } from '../types';
+import { fetchProducts } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
@@ -21,10 +22,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 }) => {
   const { addToCart } = useCart();
 
+  const [productsList, setProductsList] = useState<Product[]>(MOCK_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'All');
   const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating'>('featured');
   const [maxPrice, setMaxPrice] = useState<number>(1000);
+
+  useEffect(() => {
+    fetchProducts()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProductsList(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const categories = [
     'All',
@@ -34,7 +46,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   ];
 
   const filteredProducts = useMemo(() => {
-    return MOCK_PRODUCTS.filter((product) => {
+    return productsList.filter((product) => {
       const matchesCategory =
         selectedCategory === 'All' || product.category === selectedCategory;
 
@@ -201,45 +213,47 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="bg-white rounded-3xl border border-[#E8DCC4] p-4 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
-                  >
-                    <div>
-                      <div className="relative bg-[#F3EBDA] rounded-2xl overflow-hidden mb-4 p-4 aspect-4/3 flex items-center justify-center">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="max-h-44 object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
-                        />
+                {filteredProducts.map((product) => {
+                  const id = (product as any)._id || product.id;
+                  return (
+                    <div
+                      key={id}
+                      className="bg-white rounded-3xl border border-[#E8DCC4] p-4 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+                    >
+                      <div>
+                        <div className="relative bg-[#F3EBDA] rounded-2xl overflow-hidden mb-4 p-4 aspect-4/3 flex items-center justify-center">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="max-h-44 object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                          />
 
-                        {product.isBestSeller && (
-                          <span className="absolute top-3 left-3 bg-[#B9964A] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                            Best Seller
+                          {product.isBestSeller && (
+                            <span className="absolute top-3 left-3 bg-[#B9964A] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                              Best Seller
+                            </span>
+                          )}
+
+                          <button
+                            onClick={() => openQuickView(product)}
+                            className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-[#1E1B16] p-2 rounded-xl shadow-md backdrop-blur-xs transition-all hover:scale-110"
+                            title="Quick Preview"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-[#7A8F6C] mb-1">
+                          <span className="font-semibold text-[#8C6D2F] uppercase tracking-wider">
+                            {product.category}
                           </span>
-                        )}
+                          <span>{product.size}</span>
+                        </div>
 
-                        <button
-                          onClick={() => openQuickView(product)}
-                          className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-[#1E1B16] p-2 rounded-xl shadow-md backdrop-blur-xs transition-all hover:scale-110"
-                          title="Quick Preview"
+                        <h3
+                          onClick={() => setCurrentPage({ type: 'product-detail', productId: id })}
+                          className="font-serif font-bold text-base text-[#1E1B16] hover:text-[#B9964A] cursor-pointer line-clamp-2 leading-snug mb-2 transition-colors"
                         >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="flex items-center justify-between text-[11px] text-[#7A8F6C] mb-1">
-                        <span className="font-semibold text-[#8C6D2F] uppercase tracking-wider">
-                          {product.category}
-                        </span>
-                        <span>{product.size}</span>
-                      </div>
-
-                      <h3
-                        onClick={() => setCurrentPage({ type: 'product-detail', productId: product.id })}
-                        className="font-serif font-bold text-base text-[#1E1B16] hover:text-[#B9964A] cursor-pointer line-clamp-2 leading-snug mb-2 transition-colors"
-                      >
                         {product.name}
                       </h3>
 
@@ -280,8 +294,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                       </Button>
                     </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
+            </div>
             )}
           </div>
         </div>

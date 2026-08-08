@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MOCK_TREATMENTS } from '../../data/mockData';
-import { PageView } from '../../types';
+import { Treatment, PageView } from '../../types';
+import { fetchTreatments } from '../../services/api';
 import { Button } from '../common/Button';
 import { BotanicalDivider } from '../common/BotanicalDivider';
 import { ShieldAlert, Sparkles, Flame, Heart, Scissors, CheckCircle, ArrowRight, Activity, Leaf } from 'lucide-react';
@@ -14,6 +15,15 @@ export const SpecialTreatmentsSection: React.FC<SpecialTreatmentsSectionProps> =
   setCurrentPage,
   openBookingModal,
 }) => {
+  const [treatmentsList, setTreatmentsList] = useState<Treatment[]>(MOCK_TREATMENTS);
+
+  useEffect(() => {
+    fetchTreatments()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setTreatmentsList(data);
+      })
+      .catch(() => {});
+  }, []);
   const getTreatmentIcon = (iconName: string) => {
     switch (iconName) {
       case 'ShieldAlert': return <Activity className="w-5 h-5 text-[#C89B3C]" />;
@@ -48,9 +58,11 @@ export const SpecialTreatmentsSection: React.FC<SpecialTreatmentsSectionProps> =
 
         {/* 5 Treatments Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MOCK_TREATMENTS.map((treatment) => (
-            <div
-              key={treatment.id}
+          {treatmentsList.map((treatment) => {
+            const id = (treatment as any)._id || treatment.id;
+            return (
+              <div
+                key={id}
               className="bg-[#FFFDF7] rounded-3xl border-2 border-[#E3D4B5] p-6 shadow-sm hover:shadow-2xl hover:border-[#C89B3C] transition-all duration-300 flex flex-col justify-between"
             >
               <div>
@@ -106,7 +118,8 @@ export const SpecialTreatmentsSection: React.FC<SpecialTreatmentsSectionProps> =
                 </Button>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
 
       </div>
