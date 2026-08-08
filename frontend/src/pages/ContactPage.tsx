@@ -4,6 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
 import { MapPin, Phone, Clock, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
+import { submitContactInquiry } from '../services/api';
 
 export const ContactPage: React.FC = () => {
   const { addToast } = useToast();
@@ -14,8 +15,6 @@ export const ContactPage: React.FC = () => {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
-
-import { submitContactInquiry } from '../services/api';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

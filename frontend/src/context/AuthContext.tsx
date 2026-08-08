@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Order, Appointment } from '../types';
 import { useToast } from './ToastContext';
+import { loginUser, registerUser, createAppointment, fetchMyOrders, fetchMyAppointments } from '../services/api';
 
 export type AuthFlowStatus = 
   | 'idle' 
@@ -77,7 +78,7 @@ const INITIAL_APPOINTMENTS: Appointment[] = [
     status: "Confirmed",
     notes: "Focus on lower back ache and shoulder stiffness."
   }
-import { loginUser, registerUser, createAppointment, fetchMyOrders, fetchMyAppointments } from '../services/api';
+];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {

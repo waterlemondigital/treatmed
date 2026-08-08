@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { PageView } from '../types';
 import { Button } from '../components/common/Button';
 import { BotanicalDivider } from '../components/common/BotanicalDivider';
+import { validateCoupon, createOrder } from '../services/api';
 import { 
   ShoppingBag, 
   Trash2, 
@@ -46,8 +47,6 @@ export const CartPage: React.FC<CartPageProps> = ({ setCurrentPage }) => {
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'upi' | 'pickup'>('cod');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
-
-import { validateCoupon, createOrder } from '../services/api';
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();

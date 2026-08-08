@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { useToast } from '../../context/ToastContext';
 import { Button } from '../common/Button';
 import { Send, Sparkles, ShieldCheck, Leaf } from 'lucide-react';
+import { subscribeNewsletter } from '../../services/api';
 
 export const NewsletterSection: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const { addToast } = useToast();
-
-import { subscribeNewsletter } from '../../services/api';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
