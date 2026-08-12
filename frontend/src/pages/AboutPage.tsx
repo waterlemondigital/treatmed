@@ -43,9 +43,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ setCurrentPage, openBookin
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-3xl overflow-hidden border-4 border-[#C89B3C] shadow-2xl bg-[#1C382B]">
                 <img
-                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800"
+                  src="/doctorimage.png"
                   alt={DOCTOR_INFO.name}
-                  className="w-full h-80 sm:h-[420px] object-cover"
+                  className="w-full h-80 sm:h-[420px] object-cover object-top"
                 />
 
                 {/* Overlaid Doctor Details */}

@@ -39,9 +39,9 @@ export const BrandIntro: React.FC<BrandIntroProps> = ({ setCurrentPage }) => {
                   className="w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-[#1C382B] p-1.5 shadow-2xl border-2 border-[#C89B3C]"
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400"
+                    src="/doctorimage.png"
                     alt={DOCTOR_INFO.name}
-                    className="w-full h-full object-cover rounded-full"
+                    className="w-full h-full object-cover rounded-full object-top"
                   />
                 </motion.div>
                 <div className="absolute -bottom-2 right-0 bg-[#C89B3C] text-black text-[10px] font-extrabold px-3 py-1 rounded-full shadow-md uppercase tracking-wider border border-white">
