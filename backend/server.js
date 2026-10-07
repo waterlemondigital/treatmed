@@ -26,8 +26,15 @@ const couponRoutes = require('./routes/coupons');
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// ─── Database Middleware (Ensures MongoDB connection on Serverless & Container) ─
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message);
+  }
+  next();
+});
 
 // ─── Security & Middleware ───────────────────────────────────
 app.use(helmet());
@@ -205,10 +212,14 @@ app.use((req, res) => {
 // ─── Global Error Handler ────────────────────────────────────
 app.use(errorHandler);
 
-// ─── Start Server ────────────────────────────────────────────
+// ─── Start Server (Local / Container) ─────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`\n🌿 TreatMed Backend API running on port ${PORT}`);
-  console.log(`   Health: http://localhost:${PORT}/api/health`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🌿 TreatMed Backend API running on port ${PORT}`);
+    console.log(`   Health: http://localhost:${PORT}/api/health`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
+
+module.exports = app;
