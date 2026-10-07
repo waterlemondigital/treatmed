@@ -88,10 +88,10 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 };
 
-app.use(cors(corsOptions));
+// Trust proxy on Vercel / reverse proxies
+app.set('trust proxy', 1);
 
-// Handle preflight requests for all routes
-app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
