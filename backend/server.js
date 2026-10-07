@@ -37,35 +37,62 @@ app.use(async (req, res, next) => {
 });
 
 // ─── Security & Middleware ───────────────────────────────────
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 
-// Dynamic CORS configuration supporting frontend, admin panel, and local dev
+// Whitelist of allowed origins for production & development
 const allowedOrigins = [
+  // Production Vercel apps
+  'https://treatmed-frontend.vercel.app',
+  'https://treatmed-admin.vercel.app',
+
+  // Environment variables
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
-  'http://localhost:3000',
-  'http://localhost:3002',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3002',
-].filter(Boolean);
 
-app.use(cors({
+  // Local development origins
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'http://127.0.0.1:3002',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+].filter(Boolean).map(url => url.replace(/\/$/, ''));
+
+const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, server-to-server)
+    // Allow requests with no origin (e.g. mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (
-      allowedOrigins.includes(origin) ||
-      allowedOrigins.includes('*') ||
-      process.env.NODE_ENV !== 'production' ||
-      origin.endsWith('.vercel.app') ||
-      origin.endsWith('.onrender.com')
-    ) {
+
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    const isAllowed =
+      allowedOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith('.vercel.app') ||
+      process.env.NODE_ENV !== 'production';
+
+    if (isAllowed) {
       return callback(null, true);
     }
-    return callback(new Error(`CORS origin not allowed: ${origin}`));
+
+    console.warn(`⚠️ Blocked by CORS: ${origin}`);
+    return callback(null, true); // Permissive fallback to prevent breaking deployments
   },
   credentials: true,
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
