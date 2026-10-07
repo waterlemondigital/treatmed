@@ -1,6 +1,7 @@
 import { Product, Service, Treatment, Review, Order, Appointment, User } from '../types';
 
-const API_BASE = '/api';
+const rawApiUrl = import.meta.env.VITE_API_URL || '/api';
+const API_BASE = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
 
 // Helper for HTTP requests
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
