@@ -51,11 +51,11 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
   const { user, login } = useAuth();
   const { addToast } = useToast();
 
-  const isAdmin = user?.role === 'admin' || user?.email === 'admin@treatmed.in';
+  const isAdmin = user?.role === 'admin' || user?.email === 'treatmedclinic@gmail.com' || user?.email === 'admin@treatmed.in';
 
   // Admin login state if not admin
-  const [adminEmail, setAdminEmail] = useState('admin@treatmed.in');
-  const [adminPassword, setAdminPassword] = useState('Admin@123');
+  const [adminEmail, setAdminEmail] = useState('treatmedclinic@gmail.com');
+  const [adminPassword, setAdminPassword] = useState('Treatmed@123');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Active Admin Tab
@@ -333,7 +333,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ setCurrentPage }) => {
             </form>
 
             <p className="text-[11px] text-[#7A8F6C]">
-              Demo Admin Credentials: <strong className="text-[#1E1B16]">admin@treatmed.in</strong> / <strong className="text-[#1E1B16]">Admin@123</strong>
+              Demo Admin Credentials: <strong className="text-[#1E1B16]">treatmedclinic@gmail.com</strong> / <strong className="text-[#1E1B16]">Treatmed@123</strong>
             </p>
           </div>
         </div>

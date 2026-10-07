@@ -5,8 +5,8 @@ import { ShieldCheck, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState('admin@treatmed.in');
-  const [password, setPassword] = useState('Admin@123');
+  const [email, setEmail] = useState('treatmedclinic@gmail.com');
+  const [password, setPassword] = useState('Treatmed@123');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,7 +70,7 @@ export const LoginPage: React.FC = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@treatmed.in"
+                    placeholder="treatmedclinic@gmail.com"
                     className="w-full bg-[#FBF8F2] border border-[#E8DCC4] rounded-xl pl-10 pr-4 py-2.5 text-xs text-[#1E1B16] focus:outline-none focus:ring-2 focus:ring-[#B9964A]"
                   />
                   <Mail className="w-4 h-4 text-[#B9964A] absolute left-3 top-3" />
@@ -106,8 +106,8 @@ export const LoginPage: React.FC = () => {
 
             <div className="p-3 bg-[#FAF4E8] rounded-xl border border-[#E8DCC4] text-[11px] text-[#7A8F6C] space-y-1">
               <p className="font-bold text-[#1E1B16]">Default Demo Credentials:</p>
-              <p>• Email: <strong className="text-[#1E1B16]">admin@treatmed.in</strong></p>
-              <p>• Password: <strong className="text-[#1E1B16]">Admin@123</strong></p>
+              <p>• Email: <strong className="text-[#1E1B16]">treatmedclinic@gmail.com</strong></p>
+              <p>• Password: <strong className="text-[#1E1B16]">Treatmed@123</strong></p>
             </div>
           </div>
         </div>

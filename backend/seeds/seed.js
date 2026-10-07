@@ -444,11 +444,13 @@ const seedDatabase = async () => {
 
     // Seed Demo User
     console.log('👤 Seeding Demo User...');
+    const demoEmail = process.env.DEMO_USER_EMAIL || "salman.mira@example.com";
+    const demoPassword = process.env.DEMO_USER_PASSWORD || "Password123!";
     const demoUser = await User.create({
-      name: "Mohammed Salman",
-      email: "salman.mira@example.com",
-      phone: "+91 9820123456",
-      password: "Password123!",
+      name: process.env.DEMO_USER_NAME || "Mohammed Salman",
+      email: demoEmail,
+      phone: process.env.DEMO_USER_PHONE || "+91 9820123456",
+      password: demoPassword,
       isVerified: true,
       role: "user",
       address: {
@@ -458,15 +460,17 @@ const seedDatabase = async () => {
         state: "Maharashtra",
       },
     });
-    console.log(`   ✓ Demo user: ${demoUser.email} / Password123!`);
+    console.log(`   ✓ Demo user: ${demoUser.email} / ${demoPassword}`);
 
     // Seed Admin User
     console.log('🔑 Seeding Admin User...');
+    const adminEmail = process.env.ADMIN_EMAIL || "treatmedclinic@gmail.com";
+    const adminPassword = process.env.ADMIN_PASSWORD || "Treatmed@123";
     const adminUser = await User.create({
-      name: "Dr. HKM. Zaid Abdul Aziz",
-      email: "admin@treatmed.in",
-      phone: "+91 8879123795",
-      password: "Admin@123",
+      name: process.env.ADMIN_NAME || "Dr. HKM. Zaid Abdul Aziz",
+      email: adminEmail,
+      phone: process.env.ADMIN_PHONE || "+91 8879123795",
+      password: adminPassword,
       isVerified: true,
       role: "admin",
       address: {
@@ -476,7 +480,7 @@ const seedDatabase = async () => {
         state: "Maharashtra",
       },
     });
-    console.log(`   ✓ Admin user: ${adminUser.email} / Admin@123`);
+    console.log(`   ✓ Admin user: ${adminUser.email} / ${adminPassword}`);
 
     // Seed Sample Orders
     console.log('🛒 Seeding Sample Orders...');

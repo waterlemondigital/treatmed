@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToast();
 
-  const isAdmin = Boolean(user && (user.role === 'admin' || user.email === 'admin@treatmed.in'));
+  const isAdmin = Boolean(user && (user.role === 'admin' || user.email === 'treatmedclinic@gmail.com' || user.email === 'admin@treatmed.in'));
 
   useEffect(() => {
     const checkAuth = async () => {

@@ -107,7 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center justify-between text-xs px-2">
             <div className="truncate">
               <p className="font-bold text-white truncate">{user?.name || 'Administrator'}</p>
-              <p className="text-[10px] text-[#C89B3C] truncate">{user?.email || 'admin@treatmed.in'}</p>
+              <p className="text-[10px] text-[#C89B3C] truncate">{user?.email || 'treatmedclinic@gmail.com'}</p>
             </div>
             <button
               onClick={logout}
